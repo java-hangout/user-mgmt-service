@@ -1,0 +1,158 @@
+openapi: 3.0.1
+info:
+  title: User Management API
+  description: API for managing user operations in the User Management System (UMS).
+  version: 1.0.0
+paths:
+  /api/user/register:
+    post:
+      summary: Register a new user
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input provided
+
+  /api/user/fetch/{id}:
+    get:
+      summary: Get a user by ID
+      operationId: getUserById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the user to fetch
+      responses:
+        '200':
+          description: Successfully retrieved user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+  /api/user/update/{id}:
+    put:
+      summary: Update a user by ID
+      operationId: updateUser
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the user to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Successfully updated user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input provided
+        '404':
+          description: User not found
+
+  /api/user/delete/{id}:
+    delete:
+      summary: Delete a user by ID
+      operationId: deleteById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the user to delete
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          description: User not found
+
+  /api/user/fetch/{username}:
+    get:
+      summary: Find a user by username
+      operationId: findByUsername
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: The username of the user to fetch
+      responses:
+        '200':
+          description: Successfully retrieved user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+  /api/user/dashboard:
+    get:
+      summary: Display the user dashboard
+      operationId: userDashboard
+      responses:
+        '200':
+          description: Successfully fetched user dashboard
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Welcome to the User Dashboard!'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "12345"
+        username:
+          type: string
+          example: "john_doe"
+        firstName:
+          type: string
+          example: "John"
+        lastName:
+          type: string
+          example: "Doe"
+        email:
+          type: string
+          example: "john.doe@example.com"
+        status:
+          type: string
+          enum: [ ACTIVE, INACTIVE ]
+          example: "ACTIVE"
+      required:
+        - id
+        - username
+        - firstName
+        - lastName
+        - email
+        - status

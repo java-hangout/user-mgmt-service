@@ -1,20 +1,26 @@
-package com.jh.ums.model;
+package com.jh.tds.ums.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.util.Date;
-
+@Getter
+@Setter
 @Document(collection = "users")
 public class User {
 
     @Id
-    private String id;                  // Unique user ID
-    private String username;            // Unique username for login
-    private String passwordHash;        // Hashed password for authentication
-    private String email;               // User's email address
+    private String id;
+    @Indexed(unique = true) // Unique user ID
+    private String userName;            // Unique username for login
+    private String password;        // Hashed password for authentication
+    private String emailId;               // User's email address
     private String firstName;           // First name of the user
     private String lastName;            // Last name of the user
+    private String role;                //role - USER and Manager
     private String status;              // Status of the user (ACTIVE, INACTIVE)
     private String departmentId;        // Reference to the department the user belongs to (Many-to-One)
 
@@ -26,28 +32,28 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getEmail() {
-        return email;
+    public String getEmailId() {
+        return emailId;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmailId(String emailId) {
+        this.emailId = emailId;
     }
 
     public String getFirstName() {
@@ -64,6 +70,14 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getStatus() {
