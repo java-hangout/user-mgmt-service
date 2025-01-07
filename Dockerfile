@@ -8,7 +8,7 @@ WORKDIR /app
 COPY target/<your-microservice>.jar /app/microservice.jar
 
 # Expose the port your application runs on
-EXPOSE 8080
+EXPOSE 8081
 
 # Command to run the application
 ENTRYPOINT ["java", "-jar", "/app/microservice.jar"]
