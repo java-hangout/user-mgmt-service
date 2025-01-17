@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -76,6 +77,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUserName(userName);
     }
 
+    @Override
+    public List<User> findByUserNameIn(Set<String> usernames){
+        return userRepository.findByUserNameIn(usernames);
+    }
     // Method to get all departments
     @Override
     public List<User> getAllUsers() {
@@ -109,7 +114,8 @@ public class UserServiceImpl implements UserService {
             System.out.println("user.getRole(): "+user.getRole());
             // Add the user ID to the department
             department.getUserIds().add(user.getId());
-            System.out.println(" department.getUserIds(): "+ department.getUserIds());
+//            department.getUserIds().add(user.getUserName());
+//            System.out.println(" department.getUserIds(): "+ department.getUserIds());
         } else if ("MANAGER".equalsIgnoreCase(user.getRole())) {
             System.out.println("MANAGER--->"+"user.getRole(): "+user.getRole());
             // Check if a manager already exists in the department

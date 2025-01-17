@@ -83,6 +83,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         // Exclude /api/users/register from JWT validation
 //        return path.equals("/api/users/register");
-        return path.startsWith("/api/users");
+        return path.startsWith("/api/users") || path.startsWith("/api/rewards");
     }
 }

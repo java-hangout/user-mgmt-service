@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:3000") // Allow only your frontend URL
+@CrossOrigin(origins = "http://localhost:3000,http://localhost:3001,http://172.19.10.137:3000") // Allow only your frontend URL
 @Tag(name = "User Management", description = "Endpoints for managing users")
 public class UserController {
 

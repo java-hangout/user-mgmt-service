@@ -39,11 +39,12 @@ public class SecurityConfig {
     // HTTP security configuration to secure endpoints
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println("In side com.kt.ts.userservice.config.SecurityConfig.securityFilterChain " + http);
+//        System.out.println("In side com.kt.ts.userservice.config.SecurityConfig.securityFilterChain " + http);
         http
                 .csrf(AbstractHttpConfigurer::disable)  // Disable CSRF explicitly in Spring Security 6.x
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/users/**").permitAll() // Allow access to authentication routes
+                        .requestMatchers("/api/rewards/**").permitAll() // Allow access to authentication routes
                         .anyRequest().authenticated() // All other requests must be authenticated
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class); // Adding JWT filter before UsernamePasswordAuthenticationFilter
