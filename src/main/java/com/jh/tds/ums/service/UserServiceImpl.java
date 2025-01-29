@@ -1,16 +1,19 @@
 package com.jh.tds.ums.service;
 
 
+import com.jh.tds.ums.department.DepartmentDetailsRepository;
 import com.jh.tds.ums.exception.*;
 import com.jh.tds.ums.model.Department;
 import com.jh.tds.ums.model.User;
 import com.jh.tds.ums.repository.UserRepository;
-import com.jh.tds.ums.department.DepartmentDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -23,6 +26,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private SequenceGeneratorService sequenceGeneratorService;
+
+    @Autowired
+    private UserAuditLogService userAuditLogService;
 
     @Autowired
     DepartmentDetailsRepository departmentRepository;
@@ -46,6 +52,9 @@ public class UserServiceImpl implements UserService {
         // Generate a unique ID for the user
         String userId = sequenceGeneratorService.generateUserId();
         user.setId(userId);  // Set the generated ID
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();  // Password encoder to hash passwords
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
         User user1 = userRepository.save(user);
         updateDepartmentWithUserDetails(user1, department);
         return user1;
@@ -58,7 +67,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(User user) {
-        return userRepository.save(user);
+        Optional<User> userOptional = userRepository.findById(user.getId());  // Find user by ID (user_001, user_002, etc.)
+        User updateUser = null;
+        if (userOptional.isPresent()) {
+            User existingUser = userOptional.get();
+            updateUser = userRepository.save(user);
+            userAuditLogService.logChangesForAudit(existingUser,"Update");
+        }else {
+            throw new UserNotFoundException(user.getId());  // Handle if user not found
+        }
+        return updateUser;
 
     }
 
@@ -66,7 +84,9 @@ public class UserServiceImpl implements UserService {
     public void deleteById(String userId) {
         Optional<User> userOptional = userRepository.findById(userId);  // Find user by ID (user_001, user_002, etc.)
         if (userOptional.isPresent()) {
-            userRepository.delete(userOptional.get());  // Delete the user if found
+            User user = userOptional.get();
+            userRepository.delete(user);  // Delete the user if found
+            userAuditLogService.logChangesForAudit(user,"Delete");
         } else {
             throw new UserNotFoundException(userId);  // Handle if user not found
         }
@@ -110,13 +130,19 @@ public class UserServiceImpl implements UserService {
 
     private void updateDepartmentWithUserDetails(User user, Department department) throws ManagerAlreadyExistException {
         // Handle the case based on the user's role
-        if ("USER".equalsIgnoreCase(user.getRole())) {
+//        if ("USER".equalsIgnoreCase(user.getRole())) {
             System.out.println("user.getRole(): "+user.getRole());
             // Add the user ID to the department
-            department.getUserIds().add(user.getId());
+        if(department.getUserIds()==null){
+            List<String> users = new ArrayList<>();
+            users.add(user.getId());
+            department.setUserIds(users);
+        }else{department.getUserIds().add(user.getId());}
+
 //            department.getUserIds().add(user.getUserName());
 //            System.out.println(" department.getUserIds(): "+ department.getUserIds());
-        } else if ("MANAGER".equalsIgnoreCase(user.getRole())) {
+//        }
+        /*else if ("MANAGER".equalsIgnoreCase(user.getRole())) {
             System.out.println("MANAGER--->"+"user.getRole(): "+user.getRole());
             // Check if a manager already exists in the department
             String managerId = department.getManagerId();
@@ -130,8 +156,8 @@ public class UserServiceImpl implements UserService {
                 String message = "Manager already exists in the Department. Department Id: " + user.getDepartmentId() + " and Manager Id: " + managerId;
                 System.out.println("Error: " + message);
                 throw new ManagerAlreadyExistException(message);
-            }
-        }
+            }*/
+//        }
         // After making changes, update the department
         departmentRepository.save(department);
         System.out.println("Department updated successfully.");

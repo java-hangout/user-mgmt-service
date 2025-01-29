@@ -18,7 +18,7 @@ public class Department {
     @Indexed(unique = true)
     private String departmentName;                   // Name of the department
     private String description;            // Description of the department
-    private String managerId;              // Reference to the manager (One-to-One, Manager of the department)
+//    private String managerId;              // Reference to the manager (One-to-One, Manager of the department)
     private List<String> userIds;          // List of user IDs who are part of the department (Many-to-One)
 
     public String getId() {
@@ -45,13 +45,13 @@ public class Department {
         this.description = description;
     }
 
-    public String getManagerId() {
-        return managerId;
-    }
-
-    public void setManagerId(String managerId) {
-        this.managerId = managerId;
-    }
+//    public String getManagerId() {
+//        return managerId;
+//    }
+//
+//    public void setManagerId(String managerId) {
+//        this.managerId = managerId;
+//    }
 
     public List<String> getUserIds() {
         return userIds;
