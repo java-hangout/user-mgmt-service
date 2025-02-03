@@ -23,7 +23,7 @@ public class User {
     private String role;                //role - USER and Manager
     private String status;              // Status of the user (ACTIVE, INACTIVE)
     private String departmentId;        // Reference to the department the user belongs to (Many-to-One)
-
+    private String departmentName;
     public String getId() {
         return id;
     }
@@ -94,6 +94,14 @@ public class User {
 
     public void setDepartmentId(String departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 }
 

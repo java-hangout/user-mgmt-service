@@ -13,6 +13,7 @@ public interface UserService {
     public User registerUser(User user);
     public User getUserById(String id);
     public User updateUser(User user);
+    public User updatePW(User user);
     public void deleteById(String id);
     public User findByUserName(String userName);
     List<User> findByUserNameIn(Set<String> userNames);

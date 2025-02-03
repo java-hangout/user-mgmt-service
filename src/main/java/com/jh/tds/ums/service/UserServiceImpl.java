@@ -81,6 +81,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User updatePW(User user) {
+        Optional<User> userOptional = userRepository.findById(user.getId());  // Find user by ID (user_001, user_002, etc.)
+        User updateUser = null;
+        if (userOptional.isPresent()) {
+            User existingUser = userOptional.get();
+            updateUser = userRepository.save(user);
+            userAuditLogService.logChangesForAudit(existingUser,"PWUpdate");
+        }else {
+            throw new UserNotFoundException(user.getId());  // Handle if user not found
+        }
+        return updateUser;
+
+    }
+
+    @Override
     public void deleteById(String userId) {
         Optional<User> userOptional = userRepository.findById(userId);  // Find user by ID (user_001, user_002, etc.)
         if (userOptional.isPresent()) {

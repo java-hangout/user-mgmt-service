@@ -23,7 +23,6 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         System.out.println("registerUser --->>>" + user);
-
         try {
             User savedUser = userService.registerUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
@@ -65,6 +64,13 @@ public class UserController {
     public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
         user.setId(id);
         User updatedUser = userService.updateUser(user);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
+    }
+
+    @PutMapping("/update/pw/{id}")
+    public ResponseEntity<User> updatePWUser(@PathVariable String id, @RequestBody User user) {
+        user.setId(id);
+        User updatedUser = userService.updatePW(user);
         return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
     }
 
